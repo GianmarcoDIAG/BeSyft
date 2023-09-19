@@ -35,9 +35,9 @@ for i in range(1, MAX_GOALS+1):
         bench_df[df.iloc[0].tolist()[0]] = pad(goal_df.iloc[:,[1]]["Run Time (s)"], MAX_ENVS, TIMEOUT).values
     fig = plt.subplots()
 
-    plt.plot(bench_df["Symbolic-Compositional Best-Effort Synthesizer"], label="Symbolic-Compositional", color = "green")
-    plt.plot(bench_df["Monolithic Best-Effort Synthesizer"], label="Monolithic", color = "red")
-    plt.plot(bench_df["Explicit-Compositional Best-Effort Synthesizer"], label="Explicit-Compositional", color = "blue")
+    plt.plot(bench_df["Symbolic-Compositional Best-Effort Synthesizer"], label="Symbolic-Compositional", color = "green", marker = 'o')
+    plt.plot(bench_df["Monolithic Best-Effort Synthesizer"], label="Monolithic", color = "red", marker = 'o')
+    plt.plot(bench_df["Explicit-Compositional Best-Effort Synthesizer"], label="Explicit-Compositional", color = "blue", marker = 'o')
     
     plt.yscale("log")
     plt.xlabel("Environment requests (K)")
@@ -61,8 +61,8 @@ for i in range(1, MAX_GOALS+1):
     # print(bench_df)
     fig = plt.subplots()
 
-    plt.plot(bench_df["Symbolic-Compositional Best-Effort Synthesizer"], label="Symbolic-Compositional Best-Effort Synthesis", color = "green")
-    plt.plot(bench_df["Adversarial Synthesizer"], label="Reactive Synthesis", color = "red")
+    plt.plot(bench_df["Symbolic-Compositional Best-Effort Synthesizer"], label="Symbolic-Compositional Best-Effort Synthesis", color = "green", marker = 'o')
+    plt.plot(bench_df["Adversarial Synthesizer"], label="Reactive Synthesis", color = "red", marker = 'o')
     
     plt.yscale("log")
     plt.xlabel("Environment requests (K)")
