@@ -181,30 +181,30 @@ make -j2
 
 ## Performing the Experiments
 
-To plot the results of the experiments on counter games execute:
+To plot the results of the experiments from [1] on counter games execute:
 
 ```
 cd EmpiricalResults/CounterGames
 python3 plot.py
 ```
 
-Else, to execute your experiments on counter games run:
+Else, to execute your own experiments on counter games run:
 
 ```
 sudo chmod "u+x" exe-benchs.sh
 ./exe-benchs.sh
 ```
-Then, execute:
+To plot execute:
 
 ```
 cd Benchmarks/CounterGames
 python3 plot.py
 ```
 
-Contacts
+## Contacts
 
 For any feedback or suggestion you can reach to: parretti@diag.uniroma1.it
 
-References
+## References
 
 [1] De Giacomo, Giuseppe; Parretti, Gianmarco; and Zhu, Shufang 2023. Symbolic LTLf Best-Effort Synthesis. In European Conference on Multi-Agent Systems (EUMAS). Cham: Springer Nature Switzerland, 2023. p. 228-243.
