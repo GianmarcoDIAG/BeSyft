@@ -30,7 +30,7 @@ double sumVec(const std::vector<double>& v)
 int main(int argc, char** argv) {
 
     CLI::App app {
-        "BeSyft: a tool for Symbolic Reactive and Best-Effort Synthesis with LTLf Goals and Assumptions"
+        "BeSyft: a tool for Reactive and Best-Effort Synthesis with LTLf Goals and Assumptions"
     };
 
     string agent_file, environment_file, partition_filename, outfile="";
