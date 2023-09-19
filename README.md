@@ -43,6 +43,16 @@ Options:
 
 LTLf formulas in agent and environment files should be written in Lydia's syntax. For further details, refer to https://github.com/whitemech/lydia . 
 
+To perform best-effort synthesis for an LTLf goal in some LTLf environments, you have to provide both the path to the agent goal and the environment specifications, e.g., `Examples/counter_2.ltlf` and `Examples/add_requests.ltlf` and the partition file, e.g., `Examples/counter_2.part`.
+
+For instance, the command:
+
+```
+./BeSyft -a Examples/counter_2.ltlf -e Examples/add_request.ltlf -p Examples/counter_2.part -s 0 -t 3 -d
+```
+
+Performs best-effort synthesis using the symbolic-compositional algorithm.
+
 # Build from source
 
 Compilation instruction using CMake (https://cmake.org/). We recommend the use of Ubuntu 20.04 LTS. Problems can occur between some libraries on which BeSyft relies and newer versions of Ubuntu (more information below).
