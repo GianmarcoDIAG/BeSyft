@@ -43,7 +43,7 @@ Options:
 
 LTLf formulas in agent and environment files should be written in Lydia's syntax. For further details, refer to https://github.com/whitemech/lydia . 
 
-To perform best-effort synthesis for an LTLf goal in some LTLf environment, you have to provide both the path to the agent goal and the environment specification, e.g., `Examples/counter_2.ltlf` and `Examples/add_requests.ltlf`, and the path to the partition file, e.g., `Examples/counter_2.part`.
+To perform best-effort synthesis for an LTLf goal in some LTLf environment, you have to provide both the path to the agent goal and the environment specification, e.g., `Examples/counter_2.ltlf` and `Examples/add_request.ltlf`, and the path to the partition file, e.g., `Examples/counter_2.part`.
 
 For instance, the command:
 
