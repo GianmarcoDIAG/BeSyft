@@ -1,21 +1,61 @@
 # BeSyft
-BeSyft is a tool for symbolic best-effort synthesis with LTLf goals and assumptions
 
-## 1. Build from source
+BeSyft is a tool for symbolic best-effort synthesis with LTLf goals and assumptions. The tool has been described in [1].
 
-Compilation instruction using CMake (https://cmake.org/). We recommend the use of Ubuntu 20.04 LTS. Problems can occur between some libraries on which BeSyftP relies and newer versions of Ubuntu (more information below).
+# Usage
 
-### Install the dependencies
+The output of `BeSyft --help` is the following:
 
-#### Flex and Bison
+```
+BeSyft: a tool for Reactive and Best-Effort Synthesis with LTLf Goals and Assumptions
+Usage: ./BeSyft [OPTIONS]
+
+Options:
+  -h,--help                   Print this help message and exit
+  -d,--print-dot              Print the output function(s)
+  -a,--agent-file TEXT:FILE REQUIRED
+                              File to agent specification
+  -e,--environment-file TEXT:FILE REQUIRED
+                              File to environment assumption
+  -p,--partition-file TEXT:FILE REQUIRED
+                              File to partition
+  -s,--starting-player INT REQUIRED
+                              Starting player:
+                              agent=1;
+                              environment=0.
+  -t,--algorithm INT REQUIRED Specifies algorithm to use:
+                              Monolithic Best-Effort Synthesis=1;
+                              Explicit-Compositional Best-Effort Synthesis=2;
+                              Symbolic-Compositional Best-Effort Synthesis=3;
+                              Adversarial Reactive Synthesis=4
+  -f,--save-results TEXT      If specified, save results in the passed file. Stores:
+                              Algorithm;
+                              Goal file;
+                              Environment file;
+                              Starting player;
+                              LTLf2DFA (s);
+                              DFA2Sym (s);
+                              Adv Game (s);
+                              Coop Game (s);
+                              Run time(s);
+                              Realizability
+```
+
+# Build from source
+
+Compilation instruction using CMake (https://cmake.org/). We recommend the use of Ubuntu 20.04 LTS. Problems can occur between some libraries on which BeSyft relies and newer versions of Ubuntu (more information below).
+
+## Install the dependencies
+
+### Flex and Bison
 
 The project uses Flex and Bison for parsing purposes.
 
-Firse check that you have them: `whereis flex bison`
+First check that you have them: `whereis flex bison`
 
 If no item occurs, then you have to install them: `sudo apt-get install -f flex bison`
 
-#### CUDD 3.0.0
+### CUDD 3.0.0
 
 The project depends on CUDD 3.0.0. To install it, run the following commands
 
@@ -42,7 +82,7 @@ If you get an error about aclocal, this might be due to either
 * Needing to reconfigure, do this before `configuring: autoreconf -i`
 * Using a version of aclocal other than 1.14: modify the version 1.14 in configure accordingly.
 
-#### MONA
+### MONA
 
 The projects depends on the MONA library, version v1.4 (patch 19). We require that the library is compiled with different values for parameters such as `MAX_VARIABLES`, and `BDD_MAX_TOTAL_TABLE_SIZE` (you can have a look at the details at https://github.com/whitemech/MONA/releases/tag/v1.4-19.dev0).
 
@@ -56,11 +96,11 @@ sudo cp -P lib/* /usr/local/lib/
 sudo cp -Pr include/* /usr/local/include
 ```
 
-#### SPOT
+### SPOT
 
 The project relies on SPOT (https://spot.lre.epita.fr/). To install it, follows the instructions at https://spot.lre.epita.fr/install.html
 
-#### Graphviz
+### Graphviz
 
 The project uses Graphviz to display automata and strategies. Follow the install instructions on the official website: https://graphviz.gitlab.io/download/.
 
@@ -70,15 +110,9 @@ On Ubuntu, this should work:
 sudo apt-get install libgraphviz-dev
 ```
 
-#### Syft
+### Syft
 
 BeSyft depends on Syft. First, install the Boost libraries.
-
-```
-sudo apt-get install libboost-dev
-```
-
-If you get an error with missing Boost libraries you can use:
 
 ```
 sudo apt-get install libboost-dev-all
@@ -132,15 +166,32 @@ cmake ..
 make -j2
 ```
 
-## 2. Performing the Experiments
+## Performing the Experiments
 
-To execute the experiments on counter games run:
+To plot the results of the experiments in [De Giacomo, Parretti, and Zhu 2023] execute:
+
+```
+cd EmpiricalResults/CounterGames
+python3 plot.py
+```
+
+Else, to execute your experiments on counter games run:
 
 ```
 sudo chmod "u+x" exe-benchs.sh
 ./exe-benchs.sh
 ```
+Then, execute:
 
-Results are stored in ./build/bin/benchs/outfl_{i} (i = [1, 2, 3, 4])
+```
+cd Benchmarks/CounterGames
+python3 plot.py
+```
 
-To plot the results use `python3 plot.py`
+Contacts
+
+For any feedback or suggestion you can reach to: parretti@diag.uniroma1.it
+
+References
+
+[1] De Giacomo, Giuseppe; Parretti, Gianmarco; and Zhu, Shufang 2023. Symbolic LTLf Best-Effort Synthesis. In European Conference on Multi-Agent Systems (EUMAS). Cham: Springer Nature Switzerland, 2023. p. 228-243.
