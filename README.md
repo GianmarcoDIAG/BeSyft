@@ -41,6 +41,8 @@ Options:
                               Realizability
 ```
 
+LTLf formulas in agent and environment files should be written in Lydia's syntax. For further details, refer to https://github.com/whitemech/lydia . 
+
 # Build from source
 
 Compilation instruction using CMake (https://cmake.org/). We recommend the use of Ubuntu 20.04 LTS. Problems can occur between some libraries on which BeSyft relies and newer versions of Ubuntu (more information below).
@@ -52,6 +54,7 @@ Compilation instruction using CMake (https://cmake.org/). We recommend the use o
 The project uses Flex and Bison for parsing purposes.
 
 First check that you have them: `whereis flex bison`
+
 
 If no item occurs, then you have to install them: `sudo apt-get install -f flex bison`
 
@@ -168,7 +171,7 @@ make -j2
 
 ## Performing the Experiments
 
-To plot the results of the experiments in [De Giacomo, Parretti, and Zhu 2023] execute:
+To plot the results of the experiments on counter games execute:
 
 ```
 cd EmpiricalResults/CounterGames
