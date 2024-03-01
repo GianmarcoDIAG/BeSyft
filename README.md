@@ -13,6 +13,8 @@ Usage: ./BeSyft [OPTIONS]
 Options:
   -h,--help                   Print this help message and exit
   -d,--print-dot              Print the output function(s)
+  -c,--dominance-check        Performs the dominance check
+  -i,--interactive            Executes the synthesized strategy in interactive mode
   -a,--agent-file TEXT:FILE REQUIRED
                               File to agent specification
   -e,--environment-file TEXT:FILE REQUIRED
@@ -24,10 +26,11 @@ Options:
                               agent=1;
                               environment=0.
   -t,--algorithm INT REQUIRED Specifies algorithm to use:
-                              Monolithic Best-Effort Synthesis=1;
-                              Explicit-Compositional Best-Effort Synthesis=2;
-                              Symbolic-Compositional Best-Effort Synthesis=3;
-                              Adversarial Reactive Synthesis=4
+                              Direct Best-Effort Synthesis=1;
+                              Compositional-Minimal Best-Effort Synthesis=2;
+                              Compositional Best-Effort Synthesis=3;
+                              Compositional-Minimal Reactive Synthesis=4
+                              Compositional Reactive Synthesis=5
   -f,--save-results TEXT      If specified, save results in the passed file. Stores:
                               Algorithm;
                               Goal file;
@@ -36,9 +39,11 @@ Options:
                               LTLf2DFA (s);
                               DFA2Sym (s);
                               Adv Game (s);
-                              Coop Game (s);
+                              Coop Game (s); 	#best-effort synthesis algorithms only
+                              Dominance Test (s); 	# best-effort synthesis algorithms only with -c option
                               Run time(s);
-                              Realizability
+                              Realizability;
+                              Dominance;	#best-effort synthesis algorithms only with -c option
 ```
 
 LTLf formulas in agent and environment files should be written in Lydia's syntax. For further details, refer to https://github.com/whitemech/lydia . 
