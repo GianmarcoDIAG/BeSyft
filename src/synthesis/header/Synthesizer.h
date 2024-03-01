@@ -7,10 +7,35 @@
 #include <tuple>
 
 namespace Syft {
+
+    struct VectorHash {
+    size_t operator()(const std::vector<int>& v) const {
+        std::hash<int> hasher;
+        size_t seed = 0;
+        for (int i : v) {
+            seed ^= hasher(i) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+        }
+        return seed;
+    }
+    };
+
     struct SynthesisResult{
         bool realizability;
         CUDD::BDD winning_states;
         std::unique_ptr<Transducer> transducer;
+    };
+
+    /**
+     * class BestEffortSynthesisResult returns the result of best-effort synthesis
+     * 
+     * adversarial is the result of adversarial synthesis
+     * cooperative is the result of cooperative synthesis
+     * dominance is the result of dominance check
+    */
+    struct BestEffortSynthesisResult{
+      SynthesisResult adversarial;
+      SynthesisResult cooperative;
+      bool dominant;
     };
 
 /**
@@ -41,7 +66,7 @@ class Synthesizer {
    * a set of agent winning states
    * a transducer representing a winning strategy for the specification or nullptr if the specification is unrealizable.
    */
-  virtual SynthesisResult run() const = 0;
+  virtual SynthesisResult run() = 0;
 };
 
 }

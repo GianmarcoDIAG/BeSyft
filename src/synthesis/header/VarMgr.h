@@ -32,6 +32,35 @@ class VarMgr {
   VarMgr();
 
   /**
+   * \brief Prints information stored in VarMgr
+  */
+  void print_varmgr() const;
+
+  /**
+   * @brief Returns mapping of int IDs to variable names
+   * 
+   */
+  std::unordered_map<int, std::string> get_index_to_name() const;
+
+  /**
+   * @brief Returns mapping of variable names to BDDs
+   * 
+   */
+  std::unordered_map<std::string, CUDD::BDD> get_name_to_variable() const;
+
+  /**
+   * @brief Determine whether a string is an input variable
+   * \param var. The name of a variable as a string
+   */
+  bool is_input_variable(const std::string& var) const;
+
+  /**
+   * @brief Determine whether a string is an output variable
+   * \param var. The name of a variable as a string
+   */
+  bool is_output_variable(const std::string& var) const;
+
+  /**
    * \brief Creates BDD variables and associates each with a name.
    *
    * \param variable_names The names of the variables to create. A new variable
@@ -104,6 +133,11 @@ class VarMgr {
    * \brief Returns the index of the variable with the given name.
    */
   CUDD::BDD name_to_variable(const std::string& name) const;
+
+  /**
+   * \brief Returns a BDD corresponding to the state of an automaton
+  */
+ CUDD::BDD state_to_bdd(std::size_t automaton_id, const std::vector<int>& state) const;
 
   /**
    * \brief Returns the name of the variable at index \a index.

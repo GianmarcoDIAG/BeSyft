@@ -13,6 +13,8 @@ class ReachabilitySynthesizer : public DfaGameSynthesizer {
 
   CUDD::BDD goal_states_;
   CUDD::BDD state_space_;
+  CUDD::BDD winning_states_;
+  CUDD::BDD winning_moves_;
   
  public:
 
@@ -34,7 +36,22 @@ class ReachabilitySynthesizer : public DfaGameSynthesizer {
      * a set of agent winning states
      * a transducer representing a winning strategy or nullptr if the game is unrealizable.
      */
-  virtual SynthesisResult run() const final;
+  virtual SynthesisResult run() final;
+
+  /**
+   * \brief gets winning states
+   * 
+   * \return CUDD::BDD representing winning states
+  */
+  CUDD::BDD get_winning_states() const;
+
+ /**
+  * \brief get winning agent moves
+  * 
+  * \return CUDD::BDD representing winning states with corresponding winning moves
+ */
+  CUDD::BDD get_winning_moves() const;
+
 };
 
 }

@@ -14,6 +14,7 @@
 #include"InputOutputPartition.h"
 #include"Stopwatch.h"
 #include"spotparser.h"
+#include<unordered_set>
 
 namespace Syft {
 
@@ -33,6 +34,30 @@ namespace Syft {
 			InputOutputPartition partition_;
 
 			std::vector<double> running_times_;
+
+			bool dominance_check_;
+
+			/**
+			 * \brief Gets all cooperative winning moves in arena
+			 * 
+			 * \param arena Symbolic state DFA where to get cooperative moves
+			 * \param cooperative_states Cooperative states in arena
+			 * \param cooperative_moves Cooperative moves in arena
+			 * 
+			 * \return Boolean function representing cooperative states and all cooperative moves
+			*/
+			CUDD::BDD get_all_cooperative_moves(const SymbolicStateDfa& arena, const CUDD::BDD& cooperative_states, const CUDD::BDD& cooperative_moves) const;
+
+			/**
+			 * If a dominant strategy does not exist, finds an alternative strategy that proves it
+			 * 
+			 * \param witness Boolean function with a witness that dominant strategy does not exist 
+			 * 
+			 * \return a strategy proving that no dominant strategy exists
+			*/
+			std::unordered_map<int, CUDD::BDD> get_witness_strategy(const CUDD::BDD& witness) const;
+
+			std::vector<std::vector<int>> get_assignments(int n) const;
 		public:
 		
 			/**
@@ -49,14 +74,15 @@ namespace Syft {
 									std::string agent_specification,
 									std::string environment_specification,
 									InputOutputPartition partition,
-									Player starting_player);
+									Player starting_player,
+									bool dominance_check);
 			
 			/**
 			 * @brief Solves symbolic DFA games to compute adversarially and cooperatively winning strategies
 			 * 
 			 * @return std::pair<SynthesisResult, SynthesisResult>. First and second are the adversarial and cooperatively winning strategies, respectively.
 			 */
-			virtual std::pair<SynthesisResult, SynthesisResult> run() final;
+			virtual BestEffortSynthesisResult run() final;
 
 			/**
 			* \brief Merges two transducers into a best-effort strategy
@@ -76,6 +102,12 @@ namespace Syft {
 			 * @return std::vector<double> storing running times  
 			 */
 			std::vector<double> get_running_times() const;
+
+			void interactive(
+        		const BestEffortSynthesisResult& best_effort_result
+    		) const;
+
+			
 	};
 }
 #endif

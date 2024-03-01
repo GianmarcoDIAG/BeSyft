@@ -36,7 +36,7 @@ namespace Syft {
 
         ExplicitStateDfaMona& operator=(ExplicitStateDfaMona other)
         {
-            std::cout << "copy assignment of ExplicitStateDfaMona\n";
+            // std::cout << "copy assignment of ExplicitStateDfaMona\n";
             this->names = other.names;
             this->dfa_ = dfaCopy(other.get_dfa());
             return *this;

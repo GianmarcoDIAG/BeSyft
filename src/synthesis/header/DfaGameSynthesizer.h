@@ -49,8 +49,7 @@ class DfaGameSynthesizer : public Synthesizer<SymbolicStateDfa> {
    *
    * \return A transducer representing the winning strategy.
    */
-  virtual SynthesisResult run()
-      const override = 0;
+  virtual SynthesisResult run() override = 0;
 };
 
 }

@@ -34,8 +34,7 @@ namespace Syft {
             public:
                 CoOperativeDfaGameSynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player);
 
-                virtual SynthesisResult run()
-                    const override = 0;
+                virtual SynthesisResult run() override = 0;
     };
 
 } 

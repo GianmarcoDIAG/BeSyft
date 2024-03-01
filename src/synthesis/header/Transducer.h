@@ -42,6 +42,8 @@ class Transducer {
              Player starting_player,
              Player protagonist_player = Player::Agent);
 
+  std::unordered_map<int, CUDD::BDD> get_output_function() const;
+
   /**
    * \brief Saves the output function of the transducer in a .dot file.
    */
