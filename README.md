@@ -217,7 +217,7 @@ python3 relative_time_cost.py
 To plot results on random conjunction benchmarks:
 
 ```
-cd EmpiricalResults/Random
+cd Benchmarks/Random
 python3 random_benchmarks.py
 ```
 
