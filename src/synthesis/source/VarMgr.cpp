@@ -11,6 +11,59 @@ VarMgr::VarMgr() {
   mgr_ = std::make_shared<CUDD::Cudd>();
 }
 
+void VarMgr::print_varmgr() const {
+  // prints the number of managed automata
+  std::cout << "Number of managed automata: " << state_variables_.size() << std::endl;
+
+  // prints number of vars
+  std::cout << "Number of variables: " << state_variable_count_ + input_variables_.size() + output_variables_.size() << std::endl;
+
+  // prints named variables
+  std::cout << "Named variables (name, var): " << std::endl;
+
+  for (const auto& name_var : name_to_variable_)
+    std::cout << "Name: " << name_var.first << ". Var: " << name_var.second << std::endl;
+  
+  std::cout << "Var indexes (index, name): " << std::endl;
+
+  for (const auto& index_name: index_to_name_)
+    std::cout << "Index: " << index_name.first << ". Name: " << index_name.second << std::endl;
+
+  // prints X vars
+  std::cout << "Input variables: " << std::endl;
+  for (const auto& var: input_variables_) std::cout << "Var: " << var << std::endl;
+
+  // prints Y vars
+  std::cout << "Output variables: " << std::endl;
+  for (const auto& var: output_variables_) std::cout << "Var: " << var << std::endl;  
+
+  // prints Z vars for each managed automaton
+  for (int i = 0; i < state_variables_.size(); ++i) {
+    std::cout << "Automaton ID " << i << " state variables" << std::endl;
+    for (const auto& var: state_variables_[i]) std::cout << var << " ";
+    std::cout << std::endl;
+  }
+}
+
+std::unordered_map<int, std::string> VarMgr::get_index_to_name() const {
+  return index_to_name_;
+}
+
+std::unordered_map<std::string, CUDD::BDD> VarMgr::get_name_to_variable() const {
+  return name_to_variable_;
+}
+
+bool VarMgr::is_input_variable(const std::string& var) const {
+  CUDD::BDD bdd_var = name_to_variable_.at(var);
+  if (std::find(input_variables_.begin(), input_variables_.end(), bdd_var) != input_variables_.end())
+    return true;
+  return false;
+}
+
+bool VarMgr::is_output_variable(const std::string& var) const {
+  return !(is_input_variable(var));
+}
+
 void VarMgr::create_named_variables(
     const std::vector<std::string>& variable_names) {
   for (const std::string& name : variable_names) {
@@ -132,7 +185,10 @@ std::size_t VarMgr::total_variable_count() const {
 }
   
 std::size_t VarMgr::total_state_variable_count() const {
-  return state_variable_count_;
+  std::size_t count = 0;
+  for (const auto& state_var_vec : state_variables_) count += state_var_vec.size();
+  return count;
+  // return state_variable_count_;
 }
 
 std::size_t VarMgr::state_variable_count(std::size_t automaton_id) const {

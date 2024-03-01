@@ -68,6 +68,13 @@ CUDD::BDD SymbolicStateDfa::state_set_to_bdd(
   return bdd;
 }
 
+// TODO (Gianmarco).
+// this function creates a transition function as a function 
+// \eta: 2^Z x 2^Y x 2^X -> 2^Z s.t. \eta(Z, Y, X) = Z' 
+// iff Z=s and Z'=s' and \delta(s, (Y, X)) = s'
+// I want to obtain a Boolean formula 
+// \eta defined over 2^Z x 2^Y x 2^X x 2^Z s.t. \eta(Z, Y, X, Z') 
+// iff Z=s and Z'=s' and \delta(s, (Y, X)) = s'
 std::vector<CUDD::BDD> SymbolicStateDfa::symbolic_transition_function(
     const std::shared_ptr<VarMgr>& var_mgr,
     std::size_t automaton_id,

@@ -12,7 +12,7 @@ CoOperativeReachabilitySynthesizer::CoOperativeReachabilitySynthesizer(SymbolicS
 {}
 
 
-SynthesisResult CoOperativeReachabilitySynthesizer::run() const {
+SynthesisResult CoOperativeReachabilitySynthesizer::run() {
   SynthesisResult result;
   CUDD::BDD winning_states = state_space_ & goal_states_;
   CUDD::BDD winning_moves = winning_states;
@@ -28,10 +28,11 @@ SynthesisResult CoOperativeReachabilitySynthesizer::run() const {
         result.winning_states = new_winning_states;
         std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(
               new_winning_moves);
-
         result.transducer = std::make_unique<Transducer>(
               var_mgr_, initial_vector_, strategy, spec_.transition_function(),
               starting_player_, protagonist_player_);
+        winning_states_ = new_winning_states;
+        winning_moves_ = new_winning_moves;
         return result;
 
     } else if (new_winning_states == winning_states) {
@@ -40,18 +41,25 @@ SynthesisResult CoOperativeReachabilitySynthesizer::run() const {
         // result.transducer = nullptr;
         std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(
           new_winning_moves);
-
         result.transducer = std::make_unique<Transducer>(
               var_mgr_, initial_vector_, strategy, spec_.transition_function(),
               starting_player_, protagonist_player_);
+        winning_states_ = new_winning_states;
+        winning_moves_ = new_winning_moves;
         return result;
-    
     }
-
     winning_moves = new_winning_moves;
     winning_states = new_winning_states;
   }
 
 }
+
+CUDD::BDD CoOperativeReachabilitySynthesizer::get_winning_states() const {
+      return winning_states_;
+ }
+
+ CUDD::BDD CoOperativeReachabilitySynthesizer::get_winning_moves() const {
+      return winning_moves_;
+ }
 
 }

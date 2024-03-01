@@ -9,11 +9,13 @@ ReachabilitySynthesizer::ReachabilitySynthesizer(SymbolicStateDfa spec,
 						 CUDD::BDD goal_states,
 						 CUDD::BDD state_space)
     : DfaGameSynthesizer(spec, starting_player, protagonist_player)
-    , goal_states_(goal_states), state_space_(state_space)
+    , goal_states_(goal_states), state_space_(state_space),
+    winning_states_(spec_.var_mgr()->cudd_mgr()->bddZero()),
+    winning_moves_(spec_.var_mgr()->cudd_mgr()->bddZero())
 {}
 
 
-SynthesisResult ReachabilitySynthesizer::run() const {
+SynthesisResult ReachabilitySynthesizer::run() {
   SynthesisResult result;
   CUDD::BDD winning_states = state_space_ & goal_states_;
   CUDD::BDD winning_moves = winning_states;
@@ -29,10 +31,11 @@ SynthesisResult ReachabilitySynthesizer::run() const {
         result.winning_states = new_winning_states;
         std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(
               new_winning_moves);
-
         result.transducer = std::make_unique<Transducer>(
               var_mgr_, initial_vector_, strategy, spec_.transition_function(),
               starting_player_, protagonist_player_);
+        winning_states_ = new_winning_states;
+        winning_moves_ = new_winning_moves;
         return result;
 
     } else if (new_winning_states == winning_states) {
@@ -45,6 +48,8 @@ SynthesisResult ReachabilitySynthesizer::run() const {
         result.transducer = std::make_unique<Transducer>(
               var_mgr_, initial_vector_, strategy, spec_.transition_function(),
               starting_player_, protagonist_player_);
+        winning_states_ = new_winning_states;
+        winning_moves_ = new_winning_moves;
         return result;
     }
 
@@ -53,5 +58,13 @@ SynthesisResult ReachabilitySynthesizer::run() const {
   }
 
 }
+
+ CUDD::BDD ReachabilitySynthesizer::get_winning_states() const {
+      return winning_states_;
+ }
+
+ CUDD::BDD ReachabilitySynthesizer::get_winning_moves() const {
+      return winning_moves_;
+ }
 
 }

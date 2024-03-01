@@ -1,16 +1,16 @@
 /*
-* This file defines the class AdversarialSynthesizer
+* This file defines the class SymbolicCompositionalSymbolicCompositionalAdversarialSynthesizer
 * which implements reactive synthesis under environment assumptions
 * by reducing it to reactive synthesis
 */
 
-#include "AdversarialSynthesizer.h"
+#include "SymbolicCompositionalAdversarialSynthesizer.h"
 #include <boost/algorithm/string.hpp>
 #include <queue>
 
 namespace Syft {
 
-    AdversarialSynthesizer::AdversarialSynthesizer(
+    SymbolicCompositionalAdversarialSynthesizer::SymbolicCompositionalAdversarialSynthesizer(
                             std::shared_ptr<VarMgr> var_mgr,
                             std::string agent_specification,
                             std::string environment_specification,
@@ -27,18 +27,13 @@ namespace Syft {
         Stopwatch ltlf2dfa;
         ltlf2dfa.start();
 
-        std::string adversarial_formula = 
-            "(" + environment_specification_ + ") -> (" + agent_specification_ + ")";
-
-        ExplicitStateDfaMona adversarial_formula_dfa = 
-            ExplicitStateDfaMona::dfa_of_formula(adversarial_formula); 
-        
+        ExplicitStateDfaMona goal_dfa = 
+            ExplicitStateDfaMona::dfa_of_formula(agent_specification_);
+        ExplicitStateDfaMona env_dfa =
+            ExplicitStateDfaMona::dfa_of_formula(environment_specification_);
         // DFA A_{true} accepts non-empty traces only
         ExplicitStateDfaMona tautology_dfa = 
             ExplicitStateDfaMona::dfa_of_formula("F(true)");
-
-        // enforce non-empty trace semantics
-        adversarial_formula_dfa = ExplicitStateDfaMona::dfa_product({adversarial_formula_dfa, tautology_dfa});
 
         double t_ltlf2dfa = ltlf2dfa.stop().count() / 1000.0;
         running_times_.push_back(t_ltlf2dfa);
@@ -47,34 +42,40 @@ namespace Syft {
         Syft::Stopwatch dfa2sym;
         dfa2sym.start();
 
-        // formula parsed_adversarial_formula = 
-            // parse_formula(adversarial_formula.c_str()); // parses (E -> phi)
-
         // Extract propositions from formula and partition
-        var_mgr_->create_named_variables(adversarial_formula_dfa.names); // (E -> phi) includes all problem variables
+        var_mgr_->create_named_variables(goal_dfa.names);
+        var_mgr_->create_named_variables(env_dfa.names);
         var_mgr_->partition_variables(partition_.input_variables,
                                         partition_.output_variables);
 
-        ExplicitStateDfa explicit_adversarial_dfa = 
-            ExplicitStateDfa::from_dfa_mona(var_mgr_, adversarial_formula_dfa);
+        ExplicitStateDfa explicit_goal_dfa = 
+            ExplicitStateDfa::from_dfa_mona(var_mgr_, goal_dfa);
+        ExplicitStateDfa explicit_env_dfa =
+            ExplicitStateDfa::from_dfa_mona(var_mgr_, env_dfa);
+        ExplicitStateDfa explicit_tautology_dfa =
+            ExplicitStateDfa::from_dfa_mona(var_mgr_, tautology_dfa);
         
-        symbolic_dfa_.push_back(SymbolicStateDfa::from_explicit(std::move(explicit_adversarial_dfa)));
+        symbolic_dfa_.push_back(SymbolicStateDfa::from_explicit(std::move(explicit_goal_dfa)));
+        symbolic_dfa_.push_back(SymbolicStateDfa::from_explicit(std::move(explicit_env_dfa)));
+        symbolic_dfa_.push_back(SymbolicStateDfa::from_explicit(std::move(explicit_tautology_dfa)));
+
+        arena_.push_back(SymbolicStateDfa::product(symbolic_dfa_));
 
         double t_dfa2sym = dfa2sym.stop().count() / 1000.0;
         std::cout << "[BeSyft] Symbolic DFA construction DONE in " << t_dfa2sym << std::endl;
         running_times_.push_back(t_dfa2sym);
     }                        
 
-    SynthesisResult AdversarialSynthesizer::run() 
+    SynthesisResult SymbolicCompositionalAdversarialSynthesizer::run() 
     {
         SynthesisResult adv_result;
-        CUDD::BDD adv_goal = symbolic_dfa_[0].final_states();
+        CUDD::BDD adv_goal = ((!symbolic_dfa_[1].final_states()) + symbolic_dfa_[0].final_states()) * (!arena_[0].initial_state_bdd());
 
         // Step 2. Compute a winning strategy in the adversarial game, if it exists
         Stopwatch advGame;
         advGame.start();
         std::cout << "[BeSyft] Constructing and solving adversarial game...";
-        ReachabilitySynthesizer adv_synthesizer(symbolic_dfa_[0],
+        ReachabilitySynthesizer adv_synthesizer(arena_[0],
                                                 starting_player_,
                                                 Player::Agent,
                                                 adv_goal, // Lifting
@@ -86,7 +87,7 @@ namespace Syft {
         return adv_result;
     }
 
-    std::vector<double> AdversarialSynthesizer::get_running_times() const {
+    std::vector<double> SymbolicCompositionalAdversarialSynthesizer::get_running_times() const {
         return running_times_;
     }                                      
 }

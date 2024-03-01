@@ -19,6 +19,10 @@ Transducer::Transducer(std::shared_ptr<VarMgr> var_mgr,
     , protagonist_player_(protagonist_player)
 {}
 
+std::unordered_map<int, CUDD::BDD> Transducer::get_output_function() const {
+  return output_function_;
+}
+
 void Transducer::dump_dot(const std::string& filename) const {
 	std::vector<std::string> output_labels;
 
