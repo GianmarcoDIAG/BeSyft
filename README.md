@@ -48,15 +48,15 @@ Options:
 
 LTLf formulas in agent and environment files should be written in Lydia's syntax. For further details, refer to https://github.com/whitemech/lydia . 
 
-To perform best-effort synthesis for an LTLf goal in some LTLf environment, you have to provide both the path to the agent goal and the environment specification, e.g., `Examples/counter_2.ltlf` and `Examples/add_request.ltlf`, and the path to the partition file, e.g., `Examples/counter_2.part`.
+To perform best-effort synthesis for an LTLf goal in some LTLf environment, you have to provide both the path to the agent goal and the environment specification, e.g., `counter_2.ltlf` and `add_request.ltlf`, and the path to the partition file, e.g., `counter_2.part` (see the `Examples` folder).
 
 For instance, the command:
 
 ```
-./BeSyft -a Examples/counter_2.ltlf -e Examples/add_request.ltlf -p Examples/counter_2.part -s 0 -t 3 -d
+./BeSyft -a counter_2.ltlf -e add_request.ltlf -p counter_2.part -s 1 -t 3 -c -i
 ```
 
-Performs best-effort synthesis using the symbolic-compositional algorithm.
+Performs best-effort synthesis using the compositional algorithm, checks the existence of a dominant strategy, and executes the synthesized strategy in interactive mode.
 
 # Build from source
 
@@ -69,7 +69,6 @@ Compilation instruction using CMake (https://cmake.org/). We recommend the use o
 The project uses Flex and Bison for parsing purposes.
 
 First check that you have them: `whereis flex bison`
-
 
 If no item occurs, then you have to install them: `sudo apt-get install -f flex bison`
 
@@ -186,29 +185,45 @@ make -j2
 
 ## Performing the Experiments
 
-To plot the results of the experiments from [1] on counter games execute:
+To plot the results of our experiments on counter games execute:
 
 ```
 cd EmpiricalResults/CounterGames
-python3 plot.py
+python3 besyft_comparison.py
+python3 besyft_vs_syft.py
+python3 relative_time_cost.py
 ```
 
-Else, to execute your own experiments on counter games run:
+To plot the results of our experiments on random conjunction benchmarks execute
 
 ```
-sudo chmod "u+x" exe-benchs.sh
-./exe-benchs.sh
+cd EmpiricalResults/Random
+python3 random_benchmarks.py
 ```
-To plot execute:
+
+Else, to execute your own experiments on counter games run `sudo chmod "u+x" run-counters.sh run-random.sh`
+
+Then run: `./run-counters.sh` or `./run-random.sh`
+
+To plot results on counter games execute:
 
 ```
 cd Benchmarks/CounterGames
-python3 plot.py
+python3 besyft_comparison.py
+python3 besyft_vs_syft.py
+python3 relative_time_cost.py
+```
+
+To plot results on random conjunction benchmarks:
+
+```
+cd EmpiricalResults/Random
+python3 random_benchmarks.py
 ```
 
 ## Contacts
 
-For any feedback or suggestion you can reach to: parretti@diag.uniroma1.it
+For any question, feedback, or suggestion, please reach to: parretti@diag.uniroma1.it
 
 ## References
 
